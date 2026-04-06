@@ -1,136 +1,129 @@
-PYMPORTER — Dynamic Requirements Loader (Pure Python)
+# PYIMPORTER  
+Dynamic Requirements Loader (Pure Python!)
 
-Descripción
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Este módulo permite instalar e importar automáticamente las dependencias
-de un proyecto a partir de un archivo de texto similar a requirements.txt.
+##Description
 
-El flujo general es:
+This is a straightforward module that allows you to automatically install and import a project's dependencies from a text file, using an enriched syntax.
 
-1. Leer el archivo de requisitos
-2. Detectar paquetes faltantes o con versión incorrecta
-3. Instalar usando pip
-4. Importar dinámicamente los módulos (con alias opcional)
+The general workflow is simple:
 
-Todo en tiempo de ejecución.
+1.  Read the custom requirements file.
+2.  Install the packages using pip (if requested).
+3.  Dynamically import the modules and inject them into your script.
 
-Instalación
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-pip install git+https://github.com/AnderSantos113/pymporter.git@v0.1
+Everything happens at runtime, keeping your workspace flexible.
 
-Uso básico
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## Installation
 
-Instalar + importar todo:
-requirements("requirements.txt")
+pip install pyimporter
 
-Importación inteligente (lazy):
-importer("requirements.txt")
+(Or directly from GitHub for the latest version):
 
-Solo instalación:
-installer("requirements.txt")
+pip install git+[https://github.com/AnderSantos113/pyimporter.git@v1.0.0](https://www.google.com/search?q=https://github.com/AnderSantos113/pyimporter.git%40v1.0.0)
 
-Formato del archivo de requisitos
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Cada línea debe seguir:
+## Basic Usage
 
-package_name [as alias] [operator version]
+Install + import everything directly into your scope:
+requirements("libs.txt")
 
-Donde:
+Only import (assumes they are already installed):
+importer("libs.txt")
 
-* "as alias" es opcional
-* "operator version" es opcional
+Only install (does not inject variables into your code):
+installer("libs.txt")
 
-Ejemplos válidos
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## Requirements File Format
+
+The syntax is designed to be flexible on a single line. The general structure is:
+
+[import expression] [version] [: pip install name or url]
+
+## Valid Examples:
+
+
+### Simple imports
+
 numpy
-numpy>=1.20
-numpy as np >=1.20
-scipy
-beautifulsoup4 as bs4
-scikit-learn==1.0.2
-python-dateutil as dateutil >=2.8.0
+pandas \>= 2.0.0
 
-Operadores de versión
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-==   igual a
+### Aliases and specific objects
 
-> =   mayor o igual
-> <=   menor o igual
-> mayor que
-> <    menor que
+import numpy as np
+numpy as np \<= 1.21.0
+from urllib import request as req
 
-La versión debe ser un string numérico (ej. 1.2.3)
+### Different pip names / Custom URLs (See Special Cases below)
 
-Casos especiales (CRÍTICO)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Algunos paquetes tienen nombres distintos entre pip e import.
+import bs4 : beautifulsoup4
+pyimporter as pimp : git+[https://github.com/AnderSantos113/pyimporter.git](https://www.google.com/search?q=https://github.com/AnderSantos113/pyimporter.git)
 
-## pip name        → import name
+## Version Operators
 
-beautifulsoup4  → bs4
-Pillow          → PIL
-pyyaml          → yaml
+\==   equal to
 
-En estos casos ES OBLIGATORIO usar alias:
+ \>=   greater than or equal to
+<=   less than or equal to
+/>greater than
+\<    less than
 
-beautifulsoup4 as bs4
-Pillow as PIL
-pyyaml as yaml
+## Special Cases (The ":" Operator)
 
-Si no se usa alias → ImportError garantizado.
+Sometimes the name you use to import a package in Python is not the same name you use to install it via pip.
 
-Funciones principales
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+For example:
+pip install beautifulsoup4  -\> import bs4
+pip install PyYAML          -\> import yaml
 
-requirements(file_path, force_reinstall=False, upgrade=False, show_output=True)
+For these cases, you can use the `:` separator to specify the pip install name. The left side is what gets imported, and the right side is what gets installed:
 
-* Instala e importa todo
-* Modo completo
+import bs4 : beautifulsoup4
+import yaml : pyyaml
+import cv2 : opencv-python
 
-importer(file_path)
+You can also use this to install directly from a GitHub repository:
+my\_module : git+[https://github.com/user/repo.git](https://github.com/user/repo.git)
 
-* Solo instala lo necesario
-* Silencioso
-* Ideal para notebooks/scripts
+## Main Functions
 
-installer(file_path, force_reinstall=False, upgrade=False, show_output=True)
 
-* Solo instala
-* No importa módulos
-* Útil para setup o CI/CD
+requirements(file\_path, force\_reinstall=False, upgrade=False, show\_output=True)
 
-Notas de diseño
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  * Installs missing dependencies and imports them into your global scope.
+  * The most complete mode.
 
-* 100% Python estándar (sin dependencias externas)
-* Usa importlib, subprocess y warnings
-* dprint basado en warnings (se puede silenciar)
-* Verificación de versiones simplificada (no PEP 440 completo)
+importer(file\_path)
 
-Limitaciones
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  * Purely imports the packages into your scope.
+  * Does not attempt to install anything using pip.
 
-* No soporta versiones complejas (rc, dev, etc.)
-* No agrupa instalaciones (pip se ejecuta por paquete)
-* No resuelve dependencias entre paquetes
-* Comparación de versiones simplificada
+installer(file\_path, force\_reinstall=False, upgrade=False, show\_output=True)
 
-Advertencias
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  * Only runs the pip installation process.
+  * Does not import or inject variables.
 
-* Los módulos se inyectan en globals()
-* Un alias puede sobrescribir variables existentes (lanza warning)
-* Se recomienda usar alias explícitos en proyectos grandes
+## Design Notes
 
-Caso de uso ideal
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  * 100% standard Python (no third-party dependencies).
+  * Uses importlib, subprocess, and warnings.
+  * Captures the caller's scope using sys.\_getframe() for variable injection.
 
-* Scripts auto-contenidos
-* Notebooks reproducibles
-* Proyectos pequeños sin entorno virtual formal
-* Entornos educativos
+## Limitations
 
-Autor
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Proyecto desarrollado por Ander Santos
+  * Does not support complex PEP 440 versioning (like rc, dev, post releases).
+  * Pip is executed sequentially per package, not batched.
+  * Does not resolve complex dependency trees beforehand.
+
+## Warnings
+  * Because modules are injected directly into globals(), an alias might overwrite an existing variable in your code.
+  * It is recommended to use clear aliases to avoid namespace collisions.
+
+## Ideal Use Cases
+
+  * Self-contained scripts.
+  * Reproducible Jupyter Notebooks.
+  * Small to medium projects without a formal virtual environment.
+  * Quick prototyping and educational environments.
+
+## Author
+
+Project developed by Ander Santos.
