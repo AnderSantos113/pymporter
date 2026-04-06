@@ -1,6 +1,9 @@
+# ------------ EXTERNAL IMPORTS ------------
 import re
+# ------------ INTERNAL IMPORTS ------------
 from .phrase_version import parse_version
 
+# ------------ FUNCTION DEFINITION ------------
 def compare_versions(installed, spec):
     '''
     Compares an installed version against a specifier.
