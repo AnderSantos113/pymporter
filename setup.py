@@ -10,7 +10,7 @@ except FileNotFoundError:
     long_description = "Lightweight module to install and import runtime requirements from a requirements file."
 
 setup(
-    name="pyimporter",
+    name="pymporter",
     version="1.0.0",  
     description="Dynamic requirements loader for Python projects.",
     long_description=long_description,
@@ -22,13 +22,13 @@ setup(
     packages=find_packages(), 
     
     python_requires=">=3.8",
-    
+
     classifiers=[
-        "Development Status :: 5 - Production/Stable", # Refleja que es una v1.0 robusta
-        "Programming Language :: Python :: 3",
+        "Development Status :: 5 - Production/Stable", 
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Intended Audience :: Developers",
     ],
-    install_requires=[], # No depende de librerías externas de terceros, ¡eso es un plus gigante!
+
+    install_requires=[],
 )

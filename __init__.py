@@ -3,7 +3,7 @@
 from .main import requirements, importer, installer
 
 # ------------ METADATA ------------
-__title__ = "pyimporter"
+__title__ = "pymporter"
 __version__ = "1.0.0"
 __author__ = "Ander Emiliano Santos Ponce / Espartan113"
 __description__ = "Instalador e importador dinámico de dependencias para Python."
